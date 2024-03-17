@@ -5,11 +5,39 @@ import java.util.*;
 
 public class Main {
     private int k;
-    private List<double[]> trainingSet;
+    private List<Entry> trainingSet;
 
     public Main(int k) {
         this.k = k;
         trainingSet = new ArrayList<>();
+    }
+
+    static class Entry {
+        double[] attributes;
+        String name;
+
+        public Entry(double[] attributes, String name) {
+            this.attributes = attributes;
+            this.name = name;
+        }
+    }
+
+    class ProcessedEntry {
+        private double distance;
+        private String name;
+
+        public ProcessedEntry(double dist, String name) {
+            this.distance = dist;
+            this.name = name;
+        }
+
+        public double getDistance() {
+            return distance;
+        }
+
+        public String getName() {
+            return name;
+        }
     }
 
     public static void main(String[] args) {
@@ -23,6 +51,13 @@ public class Main {
         System.out.println("Accuracy of this model is equal to: " + accuracy);
 
     }
+    public static double euclideanDistance(double[] x, double[] y) {
+        double sum = 0.0;
+        for (int i = 0; i < x.length; i++) {
+            sum += Math.pow(x[i] - y[i], 2);
+        }
+        return Math.sqrt(sum);
+    }
 
     public void readData(String filename) {
         try {
@@ -34,7 +69,7 @@ public class Main {
                 for (int i = 0; i < data.length - 1; i++) {
                     values[i] = Double.parseDouble(data[i]);
                 }
-                trainingSet.add(values);
+                trainingSet.add(new Entry(values, data[data.length - 1]));
             }
         } catch (IOException e) {
             System.out.println("Problem reading " + filename + " file");
@@ -43,20 +78,17 @@ public class Main {
 
     public String classify(double[] testData) {
         Map<String, Integer> map = new HashMap<>();
-        List<double []> distances = new ArrayList<>();
+        List<ProcessedEntry> distances = new ArrayList<>();
 
-        for(double[] trainVec : trainingSet) {
-            double dist = euclideanDistance(testData, trainVec);
-            distances.add(new double[]{
-                    dist, trainVec[trainVec.length - 1]
-            });
+        for (Entry trainEntry : trainingSet) {
+            double dist = euclideanDistance(testData, trainEntry.attributes);
+            distances.add(new ProcessedEntry(dist, trainEntry.name));
         }
-        distances.sort(Comparator.comparingDouble(a -> a[0]));
+        distances.sort(Comparator.comparingDouble(ProcessedEntry::getDistance));
 
         for(int i = 0; i < k; i++) {
-            double[] nearest = distances.get(i);
-            String label = Double.toString(nearest[1]);
-            map.put(label, map.getOrDefault(label, 0) + 1);
+            String name = distances.get(i).getName();
+            map.put(name, map.getOrDefault(name, 0) + 1);
         }
 
         String prediction = null;
@@ -69,14 +101,6 @@ public class Main {
             }
         }
         return prediction;
-    }
-
-    public static double euclideanDistance(double[] x, double[] y) {
-        double sum = 0.0;
-        for (int i = 0; i < x.length; i++) {
-            sum += Math.pow(x[i] - y[i], 2);
-        }
-        return Math.sqrt(sum);
     }
 
     public double accuracy(String testSetFile) {
@@ -94,13 +118,16 @@ public class Main {
 
                 String trueClass = data[data.length - 1];
                 String result = classify(testVec);
+
+                System.out.println("Predicted class: " + result);
+                System.out.println("True class: " + trueClass);
+
                 if(result.equals(trueClass)) {
                     correct++;
                 }
                 total++;
-        }
-    }
-        catch (IOException e) {
+            }
+        } catch (IOException e) {
             System.out.println("Problem reading " + testSetFile + " file");
         }
         return (double) correct / total;
