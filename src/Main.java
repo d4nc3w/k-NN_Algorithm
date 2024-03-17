@@ -1,6 +1,4 @@
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 public class Main {
@@ -50,7 +48,23 @@ public class Main {
         double accuracy = main.accuracy(test_Set);
         System.out.println("Accuracy of this model is equal to: " + accuracy);
 
+        //Write results for every k from 1 to 100:
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("results.tsv"))) {
+            writer.write("k\taccuracy\n"); // Use tab delimiter
+
+            for (int i = 1; i<= 100; i++) {
+                Main m = new Main(i);
+                m.readData("iris.data");
+                double acc = m.accuracy("iris.test.data");
+                writer.write(k + "\t" + String.format("%.2f", acc) + "\n");
+            }
+
+        } catch(IOException e) {
+            System.out.println("Problem writing to file: " + e.getMessage());
+        }
     }
+
+
     public static double euclideanDistance(double[] x, double[] y) {
         double sum = 0.0;
         for (int i = 0; i < x.length; i++) {
@@ -119,8 +133,8 @@ public class Main {
                 String trueClass = data[data.length - 1];
                 String result = classify(testVec);
 
-                System.out.println("Predicted class: " + result);
-                System.out.println("True class: " + trueClass);
+               // System.out.println("Predicted class: " + result);
+               // System.out.println("True class: " + trueClass);
 
                 if(result.equals(trueClass)) {
                     correct++;
