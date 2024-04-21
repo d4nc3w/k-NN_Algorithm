@@ -3,12 +3,12 @@ Simple k-NN algorithm, that learns from a given set of data and predicts the out
 
 MiniProject: k-NN (Nearest Neighbours)
 
-public Main(int k) {
+      public Main(int k) {
 * This is the constructor of our Main class that takes args[0] and assign k variable to it
 * It also creates our training set as an ArrayList<>
 }
 
-public static void main(String[] args) {
+      public static void main(String[] args) {
 * This is our main method that is our entry of the program 
 * It takes k, train_set, test_set from args
 * It asks user if he want to check his own vector or just check accuracy for test file 
@@ -22,26 +22,26 @@ public static void main(String[] args) {
         * It prints accuracy of the model.
 }
 
-static class Entry{
+               static class Entry{
 * This class represents an entry in the dataset
 * It contains attributes (double array) and the class Name (String)
 }
 
-class ProcessedEntry {
+      class ProcessedEntry {
 * This class represents processed Entry during classification 
 * It holds the distance (double) from a test instance and the class Name (String)
 }
 
-public static double euclideanDistance(double[] x, double[] y) {
+      public static double euclideanDistance(double[] x, double[] y) {
 * This method calculates the Euclidean distance between two data points represented by double arrays.
 }
 
-public void readData(String filename) {
+      public void readData(String filename) {
 * This method reads data from a test_Set file and 
 * Populates the training set with newly created Entry instances. 
 }
 
-public String classify(double[] testData){
+      public String classify(double[] testData){
 * This method performs k-nearest neighbor classification.
 * For each test instance, it calculates distances to all training instances, sorts them, selects the k-nearest neighbors, and predicts the class based on majority voting.
 
@@ -60,7 +60,7 @@ public String classify(double[] testData){
     * Return the predicted class label.
 }
 
-public double accuracy(String testSetFile){
+            public double accuracy(String testSetFile){
 * Initialize variables correct and total to keep track of the number of correctly classified instances and the total number of instances in the test set, respectively.
 * correct is initialized to 0.
 * total is assigned the size of the testVectors list, which represents the total number of test instances.
@@ -73,7 +73,7 @@ public double accuracy(String testSetFile){
 * Return the accuracy as a double value.
 }
 
-private static void handleNewVector(int k, String train_Set){
+      private static void handleNewVector(int k, String train_Set){
 * It reads vector from the user (format: x.x,y.y,z.z,w.w)
 * It splits the vector and put each double separately into double array
 * The method creates a new instance of the Main class with the specified value of k.
@@ -83,7 +83,7 @@ private static void handleNewVector(int k, String train_Set){
 * Result is printed on the console 
 }
 
-private static void readTestSet(test_Set, TestVectors, trueClasses) {
+      private static void readTestSet(test_Set, TestVectors, trueClasses) {
 Overall, the readTestSet method reads the test set data from the specified file, parses each line to extract the test vector components and true class, and adds them to the corresponding lists (testVectors and trueClasses).
 
 * Method reads each line from the given file and splits its wherever comma is (,)
